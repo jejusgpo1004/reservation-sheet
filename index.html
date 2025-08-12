@@ -26,32 +26,30 @@
     }
     #categoryDisplay.show { opacity: 1; }
 
-h2 {
-  color: #00796b;
-  margin-top: 0;
-  margin-bottom: 6px; /* ⬅ 카테고리 제목 아래 여백 줄임 */
-  font-size: 3em;
-  font-weight: 800;
-  padding-bottom: 8px; /* ⬅ 안쪽 패딩 조금 줄임 */
-  text-align: center;
-  letter-spacing: 1px;
-  user-select: none;
-}
+    h2 {
+      color: #00796b;
+      margin-top: 0;
+      font-size: 3em; /* 카테고리 이름 크기 */
+      font-weight: 800;
+      padding-bottom: 14px;
+      text-align: center;
+      letter-spacing: 1px;
+      user-select: none;
+    }
 
-.notice-box {
-  margin: 8px auto 20px auto; /* ⬅ 위쪽 여백 8px로 줄임 */
-  max-width: 700px;
-  background: #e0f7fa;
-  color: #00796b;
-  font-size: 1.6em;
-  font-weight: bold;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  border: 2px solid #4db6ac;
-  line-height: 2;
-}
-
+    .notice-box {
+      margin: 0 auto 20px auto; 
+      max-width: 700px;
+      background: #e0f7fa; 
+      color: #00796b; 
+      font-size: 1.6em;    /* 글자 크기 확대 */
+      font-weight: bold;
+      border-radius: 12px; 
+      padding: 20px;       /* 안쪽 여백 넉넉하게 */
+      text-align: center;
+      border: 2px solid #4db6ac; /* 테두리 두껍게 */
+      line-height: 2;      /* 줄 간격 넓게 */
+    }
 
     hr {
       border: none;
@@ -209,7 +207,7 @@ h2 {
         html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br> 탁구 : 제한없음</div>`;
       }
       if (category.name === "미디어실") {
-        html += `<div class="notice-box">닌텐도 : 기본이용시간 30분<span>|</span> 최대이용시간 1시간 <br> 영화 : 영화 한 편</div>`;
+        html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간 <br> 영화 : 영화 한 편</div>`;
       }
 
       // 중간 선
