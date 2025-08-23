@@ -92,34 +92,76 @@
 </head>
 <body>
   <div id="categoryDisplay">로딩 중...</div>
-
   <script>
     const sources = [
       { name: "컴퓨터", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=389966305&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=389966305&single=true&output=csv",
+        wantedCols: ["이름", "컴퓨터번호", "시작시간", "현황"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          const 제외=["학교","연락처","타임스탬프"];
+          return !제외.includes(row.trim());
+        }
       },
       { name: "노래연습실", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=459320473&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=459320473&single=true&output=csv",
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "노래방", "시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       },
       { name: "미디어실", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1373134857&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1373134857&single=true&output=csv",
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       },
       { name: "체육활동실", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=93372477&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=93372477&single=true&output=csv",
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시설", "시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       },
       { name: "북카페", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=660141070&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=660141070&single=true&output=csv",
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       },
       { name: "청운위실", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1485760318&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1485760318&single=true&output=csv",
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       },
       { name: "개인연습실", 
-        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=956982417&single=true&output=csv"
+        url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=956982417&single=true&output=csv",
+        wantedCols: ["이름", "이용시작시간", "현황", "참고"],
+        filter: (row,i) => {
+          if (i===0) return true;
+          if (!row[0].trim()) return false;
+          return true;
+        }
       }
     ];
 
     let currentIndex = 0;
-    const interval = 10000; // 10초마다 전환
+    const interval = 10000;
 
     async function fetchCSV(url) {
       try {
@@ -149,33 +191,67 @@
       // 제목
       let html = `<h2>${category.name}</h2>`;
 
-      // 안내박스 (필요 시 유형 별로 추가)
+      // 안내박스
       if (category.name === "컴퓨터") {
         html += `<div class="notice-box">기본이용시간: 1시간 <span>|</span> 최대이용시간: 2시간</div>`;
       }
       if (category.name === "노래연습실") {
-        html += `<div class="notice-box">기본이용시간: 30분</div>`;
+        html += `<div class="notice-box">기본이용시간: 30분 </div>`;
       }
       if (category.name === "체육활동실") {
-        html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br>탁구 : 제한없음</div>`;
+        html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br> 탁구 : 제한없음</div>`;
       }
       if (category.name === "미디어실") {
-        html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간<br>영화 : 영화 한 편</div>`;
+        html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간 <br> 영화 : 영화 한 편</div>`;
       }
 
-      // 중간선
+      // 중간 선
       html += `<hr>`;
 
-      // ★ 전체 컬럼 표 출력
-      html += "<table>";
-      rows.forEach((row, i) => {
-        html += "<tr>";
-        row.forEach(cell => {
-          html += i===0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+      // 표 작성
+      if (category.wantedCols) {
+        const header = rows[0];
+        const wantedIdx = category.wantedCols.map(col => header.indexOf(col));
+        let dataRows = [header, ...rows.slice(1).filter((row,i) => category.filter(row, i+1))];
+
+        html += "<table><tr>";
+
+        // 헤더명 수정 (이름 (이용 청소년 다 적을 것) → 이름)
+        category.wantedCols.forEach(col => {
+          if (col.includes("이름")) {
+            html += `<th>이름</th>`;
+          } else {
+            html += `<th>${col}</th>`;
+          }
         });
+
         html += "</tr>";
-      });
-      html += "</table>";
+
+        dataRows.slice(1).forEach(row => {
+          html += "<tr>";
+          wantedIdx.forEach(idx => {
+            let cellValue = idx >= 0 ? row[idx] : "";
+            // 이름 컬럼이면 3글자만 표시
+            if (category.wantedCols[0].includes("이름") && idx === wantedIdx && cellValue.length > 3) {
+              cellValue = cellValue.slice(0, 3);
+            }
+            html += `<td>${cellValue}</td>`;
+          });
+          html += "</tr>";
+        });
+
+        html += "</table>";
+      } else {
+        html += "<table>";
+        rows.forEach((row,i) => {
+          html += "<tr>";
+          row.forEach(cell => {
+            html += i===0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
+          });
+          html += "</tr>";
+        });
+        html += "</table>";
+      }
 
       container.innerHTML = html;
       requestAnimationFrame(() => container.classList.add("show"));
