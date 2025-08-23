@@ -140,9 +140,19 @@
     }
 
     // 예약된 줄인지 체크하는 함수
-    // 모든 컬럼이 빈 문자열 또는 공백이면 예약없다고 판단 (필요 시 조건 수정)
-    function isReserved(row) {
-      return row.some((cell) => cell.trim() !== "");
+    // 헤더와 내용이 같은 경우, 그리고 이름과 현황이 모두 빈 값인 경우 제외
+    function isReserved(row, headerRow, colsToShow) {
+      if (row.map(cell => cell.trim()).join() === headerRow.map(cell => cell.trim()).join()) return false;
+
+      const nameIdx = colsToShow[0];
+      const statusIdx = colsToShow.find(idx => headerRow[idx] === "현황");
+
+      const nameCell = row[nameIdx] ? row[nameIdx].trim() : "";
+      const statusCell = statusIdx !== undefined ? (row[statusIdx] ? row[statusIdx].trim() : "") : "";
+
+      if (!nameCell && !statusCell) return false;
+
+      return row.some(cell => cell.trim() !== "");
     }
 
     async function showCategory(index) {
@@ -188,7 +198,7 @@
 
       // 데이터 출력 (예약된 줄만)
       rows.slice(1).forEach((row) => {
-        if (isReserved(row)) {
+        if (isReserved(row, rows[0], colsToShow)) {
           html += "<tr>";
           row.forEach((cell, idx) => {
             if (colsToShow.includes(idx)) {
