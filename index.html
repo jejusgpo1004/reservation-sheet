@@ -105,7 +105,7 @@
       },
       { name: "노래연습실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=459320473&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "노래방", "시작시간", "현황", "참고"],
+        wantedCols: ["이름", "노래방", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -114,7 +114,7 @@
       },
       { name: "미디어실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1373134857&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
+        wantedCols: ["이름", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -123,7 +123,7 @@
       },
       { name: "체육활동실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=93372477&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시설", "시작시간", "현황", "참고"],
+        wantedCols: ["이름", "이용시설", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -132,7 +132,7 @@
       },
       { name: "북카페",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=660141070&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
+        wantedCols: ["이름", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -141,7 +141,7 @@
       },
       { name: "청운위실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1485760318&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시작시간", "현황", "참고"],
+        wantedCols: ["이름", "이용시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -207,19 +207,14 @@
       // 중간 선
       html += `<hr>`;
 
-      // 표 작성 (wantedCols 기반)
+      // 표 생성 (wantedCols 기준)
       if (category.wantedCols) {
         const header = rows[0];
         const wantedIdx = category.wantedCols.map(col => header.indexOf(col));
-        let dataRows = [header, ...rows.slice(1).filter((row, i) => category.filter(row, i+1))];
+        let dataRows = [header, ...rows.slice(1).filter((row,i) => category.filter(row, i+1))];
 
         html += "<table><tr>";
-        category.wantedCols.forEach(col => {
-          if (col.includes("이름")) {
-            html += `<th>이름</th>`;
-          } else {
-            html += `<th>${col}</th>`;
-          }
+        
         });
         html += "</tr>";
 
@@ -227,9 +222,9 @@
           html += "<tr>";
           wantedIdx.forEach((idx, i) => {
             let cellValue = idx >= 0 ? row[idx] : "";
-            // 이름 컬럼 첫 3글자만 표시
+            // 이름 컬럼이라면 처음 3글자만 표시
             if (category.wantedCols[i].includes("이름")) {
-              cellValue = cellValue.length > 3 ? cellValue.slice(0,3) : cellValue;
+              cellValue = cellValue.length > 3 ? cellValue.slice(0, 3) : cellValue;
             }
             html += `<td>${cellValue}</td>`;
           });
@@ -238,9 +233,9 @@
 
         html += "</table>";
       } else {
-        // wantedCols 가 없을 경우 전체 표시 (예비용)
+        // wantedCols 없으면 전체 표시
         html += "<table>";
-        rows.forEach((row, i) => {
+        rows.forEach((row,i) => {
           html += "<tr>";
           row.forEach(cell => {
             html += i===0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
@@ -249,6 +244,7 @@
         });
         html += "</table>";
       }
+
       container.innerHTML = html;
       requestAnimationFrame(() => container.classList.add("show"));
     }
