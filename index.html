@@ -120,11 +120,7 @@
       },
       { name: "미디어실", 
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1373134857&single=true&output=csv",
-        wantedCols: ["이름", "시작시간", "현황", "참고"],
-        filter: (row,i) => {
-          if (i===0) return true;
-          if (!row[0].trim()) return false;
-          return true;
+       
         }
       },
       { name: "체육활동실", 
