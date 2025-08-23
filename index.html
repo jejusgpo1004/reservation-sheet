@@ -135,21 +135,16 @@
     }
 
     // 이름란에서 첫 번째 이름만, 특수문자 제외, 한글 3자 제한
-    function extractFirstName(fullname) {
-      // 특수문자 제거 (콤마, 따옴표 등)
-      let cleaned = fullname.replace(/["'‘’“”]/g, "").trim();
-      // 콤마(,) 기준으로 분리 후 첫 번째 이름 선택
-      let firstName = cleaned.split(",")[0].trim();
-      // 한글 3자까지만 자르기
-      // 한글만 자르려면 아래 정규식 검사 후 최대 3글자 추출
-      let hangulChars = firstName.match(/[가-힣]/g);
-      if(hangulChars) {
-        if(hangulChars.length > 3){
-          firstName = hangulChars.slice(0,3).join("");
-        }
-      }
-      return firstName;
-    }
+function extractFirstName(fullname) {
+  // 따옴표 등 특수문자 제거
+  let cleaned = fullname.replace(/["'‘’“”]/g, "").trim();
+  // 콤마(,) 또는 공백(스페이스)의 앞부분만 추출
+  let first = cleaned.split(",")[0].split(" ").trim();
+  // 한글만 남기고 3글자까지만 자르기
+  let hangulMatch = first.match(/[가-힣]{1,3}/);
+  return hangulMatch ? hangulMatch : first.slice(0,3);
+}
+
 
     async function showCategory(index) {
       const category = sources[index];
@@ -180,24 +175,23 @@
 
       html += `<hr>`;
       html += "<table>";
-      rows.forEach((row, i) => {
-        html += "<tr>";
-        row.forEach((cell, j) => {
-          if (i === 0) {
-            // 헤더는 그대로
-            html += `<th>${cell}</th>`;
-          } else {
-            // 컴퓨터 카테고리는 이름 그대로 출력
-            // 나머지는 이름 컬럼(두번째, j===1)만 대표 이름 추출
-            if (category.name !== "컴퓨터" && j === 1) {
-              html += `<td>${extractFirstName(cell)}</td>`;
-            } else {
-              html += `<td>${cell}</td>`;
-            }
-          }
-        });
-        html += "</tr>";
-      });
+     rows.forEach((row, i) => {
+  html += "<tr>";
+  row.forEach((cell, j) => {
+    if (i === 0) {
+      html += `<th>${cell}</th>`;
+    } else {
+      // 컴퓨터 제외, 이름란(두번째 컬럼, j===1)만 전처리
+      if (category.name !== "컴퓨터" && j === 1) {
+        html += `<td>${extractFirstName(cell)}</td>`;
+      } else {
+        html += `<td>${cell}</td>`;
+      }
+    }
+  });
+  html += "</tr>";
+});
+
       html += "</table>";
 
       container.innerHTML = html;
