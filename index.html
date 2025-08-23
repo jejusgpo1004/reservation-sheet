@@ -141,12 +141,13 @@
 
     // 예약된 줄인지 체크하는 함수
     // 모든 컬럼이 빈 문자열 또는 공백이면 예약없다고 판단 (필요 시 조건 수정)
-    function isReserved(row, headerRow) {
-  // row가 headerRow(타이틀 행)와 똑같으면 예약 아님
-  if (row.join("") === headerRow.join("")) return false;
-  // 데이터가 하나 이상 값이 있으면 예약 행으로 본다
+function isReserved(row, headerRow) {
+  // row와 헤더가 완전히 같은 값이면 출력하지 않음
+  if (row.map(cell => cell.trim()).join() === headerRow.map(cell => cell.trim()).join()) return false;
+  // 빈 셀 빼고 값이 1개 이상 있으면 출력
   return row.some(cell => cell.trim() !== "");
 }
+
 
 
     async function showCategory(index) {
@@ -191,7 +192,7 @@
       html += "</tr>";
 
       // 데이터 출력 (예약된 줄만)
-      rows.slice(1).forEach((row) => {
+rows.slice(1).forEach((row) => {
   if (isReserved(row, rows[0])) {
     html += "<tr>";
     row.forEach((cell, idx) => {
@@ -201,6 +202,8 @@
     });
     html += "</tr>";
   }
+});
+
 });
 
       html += "</table>";
