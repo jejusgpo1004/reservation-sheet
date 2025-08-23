@@ -5,6 +5,7 @@
   <title>서청문 예약현황 사이트</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
+
     html, body {
       height: 100%;
       margin: 0;
@@ -28,31 +29,34 @@
     h2 {
       color: #00796b;
       margin-top: 0;
-      font-size: 3em;
+      font-size: 3em; /* 카테고리 이름 크기 */
       font-weight: 800;
       padding-bottom: 14px;
       text-align: center;
       letter-spacing: 1px;
       user-select: none;
     }
+
     .notice-box {
-      margin: 0 auto 20px auto;
+      margin: 0 auto 20px auto; 
       max-width: 700px;
-      background: #e0f7fa;
-      color: #00796b;
-      font-size: 1.6em;
+      background: #e0f7fa; 
+      color: #00796b; 
+      font-size: 1.6em;    /* 글자 크기 확대 */
       font-weight: bold;
-      border-radius: 12px;
-      padding: 20px;
+      border-radius: 12px; 
+      padding: 20px;       /* 안쪽 여백 넉넉하게 */
       text-align: center;
-      border: 2px solid #4db6ac;
-      line-height: 2;
+      border: 2px solid #4db6ac; /* 테두리 두껍게 */
+      line-height: 2;      /* 줄 간격 넓게 */
     }
+
     hr {
       border: none;
       border-top: 3px solid #4db6ac;
       margin: 20px 0;
     }
+
     table {
       border-collapse: separate;
       border-spacing: 0 12px;
@@ -92,6 +96,7 @@
 </head>
 <body>
   <div id="categoryDisplay">로딩 중...</div>
+
   <script>
     const sources = [
       { name: "컴퓨터", 
@@ -101,12 +106,12 @@
           if (i===0) return true;
           if (!row[0].trim()) return false;
           const 제외=["학교","연락처","타임스탬프"];
-          return !제외.includes(row.trim());
+          return !제외.includes(row[0].trim());
         }
       },
       { name: "노래연습실", 
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=459320473&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "노래방", "시작시간", "현황", "참고"],
+        wantedCols: ["이름   (이용 청소년 다 적을 것)", "노래방", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -133,7 +138,7 @@
       },
       { name: "북카페", 
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=660141070&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
+        wantedCols: ["이름 (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -142,7 +147,7 @@
       },
       { name: "청운위실", 
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1485760318&single=true&output=csv",
-        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시작시간", "현황", "참고"],
+        wantedCols: ["이름 (이용 청소년 다 적을 것)", "이용시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
@@ -208,34 +213,21 @@
       // 중간 선
       html += `<hr>`;
 
-      // 표 작성
+      // 표
       if (category.wantedCols) {
         const header = rows[0];
         const wantedIdx = category.wantedCols.map(col => header.indexOf(col));
-        let dataRows = [header, ...rows.slice(1).filter((row,i) => category.filter(row, i+1))];
+        let dataRows = [header, ...rows.slice(1)
+          .filter((row, i) => category.filter(row, i+1))];
 
         html += "<table><tr>";
-
-        // 헤더명 수정 (이름 (이용 청소년 다 적을 것) → 이름)
-        category.wantedCols.forEach(col => {
-          if (col.includes("이름")) {
-            html += `<th>이름</th>`;
-          } else {
-            html += `<th>${col}</th>`;
-          }
-        });
-
+        category.wantedCols.forEach(col => html += `<th>${col}</th>`);
         html += "</tr>";
 
         dataRows.slice(1).forEach(row => {
           html += "<tr>";
           wantedIdx.forEach(idx => {
-            let cellValue = idx >= 0 ? row[idx] : "";
-            // 이름 컬럼이면 3글자만 표시
-            if (category.wantedCols[0].includes("이름") && idx === wantedIdx && cellValue.length > 3) {
-              cellValue = cellValue.slice(0, 3);
-            }
-            html += `<td>${cellValue}</td>`;
+            html += `<td>${idx >= 0 ? row[idx] : ""}</td>`;
           });
           html += "</tr>";
         });
@@ -243,7 +235,7 @@
         html += "</table>";
       } else {
         html += "<table>";
-        rows.forEach((row,i) => {
+        rows.forEach((row, i) => {
           html += "<tr>";
           row.forEach(cell => {
             html += i===0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
