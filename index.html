@@ -5,7 +5,6 @@
   <title>서청문 예약현황 사이트</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
-
     html, body {
       height: 100%;
       margin: 0;
@@ -25,38 +24,34 @@
       transition: opacity 0.5s ease-in-out;
     }
     #categoryDisplay.show { opacity: 1; }
-
     h2 {
       color: #00796b;
       margin-top: 0;
-      font-size: 3em; /* 카테고리 이름 크기 */
+      font-size: 3em;
       font-weight: 800;
       padding-bottom: 14px;
       text-align: center;
       letter-spacing: 1px;
       user-select: none;
     }
-
     .notice-box {
-      margin: 0 auto 20px auto; 
+      margin: 0 auto 20px auto;
       max-width: 700px;
-      background: #e0f7fa; 
-      color: #00796b; 
-      font-size: 1.6em;    /* 글자 크기 확대 */
+      background: #e0f7fa;
+      color: #00796b;
+      font-size: 1.6em;
       font-weight: bold;
-      border-radius: 12px; 
-      padding: 20px;       /* 안쪽 여백 넉넉하게 */
+      border-radius: 12px;
+      padding: 20px;
       text-align: center;
-      border: 2px solid #4db6ac; /* 테두리 두껍게 */
-      line-height: 2;      /* 줄 간격 넓게 */
+      border: 2px solid #4db6ac;
+      line-height: 2;
     }
-
     hr {
       border: none;
       border-top: 3px solid #4db6ac;
       margin: 20px 0;
     }
-
     table {
       border-collapse: separate;
       border-spacing: 0 12px;
@@ -96,65 +91,64 @@
 </head>
 <body>
   <div id="categoryDisplay">로딩 중...</div>
-
   <script>
     const sources = [
-      { name: "컴퓨터", 
+      { name: "컴퓨터",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=389966305&single=true&output=csv",
         wantedCols: ["이름", "컴퓨터번호", "시작시간", "현황"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           const 제외=["학교","연락처","타임스탬프"];
-          return !제외.includes(row[0].trim());
+          return !제외.includes(row.trim());
         }
       },
-      { name: "노래연습실", 
+      { name: "노래연습실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=459320473&single=true&output=csv",
-        wantedCols: ["이름", "노래방", "시작시간", "현황", "참고"],
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "노래방", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           return true;
         }
       },
-      { name: "미디어실", 
+      { name: "미디어실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1373134857&single=true&output=csv",
-        wantedCols: ["이름", "시작시간", "현황", "참고"],
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           return true;
         }
       },
-      { name: "체육활동실", 
+      { name: "체육활동실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=93372477&single=true&output=csv",
-        wantedCols: ["이름", "이용시설", "시작시간", "현황", "참고"],
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시설", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           return true;
         }
       },
-      { name: "북카페", 
+      { name: "북카페",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=660141070&single=true&output=csv",
-        wantedCols: ["이름", "시작시간", "현황", "참고"],
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           return true;
         }
       },
-      { name: "청운위실", 
+      { name: "청운위실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=1485760318&single=true&output=csv",
-        wantedCols: ["이름", "이용시작시간", "현황", "참고"],
+        wantedCols: ["이름  (이용 청소년 다 적을 것)", "이용시작시간", "현황", "참고"],
         filter: (row,i) => {
           if (i===0) return true;
           if (!row[0].trim()) return false;
           return true;
         }
       },
-      { name: "개인연습실", 
+      { name: "개인연습실",
         url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=956982417&single=true&output=csv",
         wantedCols: ["이름", "이용시작시간", "현황", "참고"],
         filter: (row,i) => {
@@ -213,27 +207,38 @@
       // 중간 선
       html += `<hr>`;
 
-      // 표
+      // 표 작성 (wantedCols 기반)
       if (category.wantedCols) {
         const header = rows[0];
         const wantedIdx = category.wantedCols.map(col => header.indexOf(col));
-        let dataRows = [header, ...rows.slice(1)
-          .filter((row, i) => category.filter(row, i+1))];
+        let dataRows = [header, ...rows.slice(1).filter((row, i) => category.filter(row, i+1))];
 
         html += "<table><tr>";
-        category.wantedCols.forEach(col => html += `<th>${col}</th>`);
+        category.wantedCols.forEach(col => {
+          if (col.includes("이름")) {
+            html += `<th>이름</th>`;
+          } else {
+            html += `<th>${col}</th>`;
+          }
+        });
         html += "</tr>";
 
         dataRows.slice(1).forEach(row => {
           html += "<tr>";
-          wantedIdx.forEach(idx => {
-            html += `<td>${idx >= 0 ? row[idx] : ""}</td>`;
+          wantedIdx.forEach((idx, i) => {
+            let cellValue = idx >= 0 ? row[idx] : "";
+            // 이름 컬럼 첫 3글자만 표시
+            if (category.wantedCols[i].includes("이름")) {
+              cellValue = cellValue.length > 3 ? cellValue.slice(0,3) : cellValue;
+            }
+            html += `<td>${cellValue}</td>`;
           });
           html += "</tr>";
         });
 
         html += "</table>";
       } else {
+        // wantedCols 가 없을 경우 전체 표시 (예비용)
         html += "<table>";
         rows.forEach((row, i) => {
           html += "<tr>";
@@ -244,11 +249,9 @@
         });
         html += "</table>";
       }
-
       container.innerHTML = html;
       requestAnimationFrame(() => container.classList.add("show"));
     }
-
     showCategory(currentIndex);
     setInterval(() => {
       currentIndex = (currentIndex + 1) % sources.length;
