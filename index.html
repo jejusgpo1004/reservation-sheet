@@ -24,7 +24,6 @@
       transition: opacity 0.5s ease-in-out;
     }
     #categoryDisplay.show { opacity: 1; }
-
     h2 {
       color: #00796b;
       margin-top: 0;
@@ -114,15 +113,14 @@
       { name: "개인연습실", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvd2Sefa0BZEUWNT1V4mnRxbyXyDiRNEepnujdArN5VXZwmoTlYCdsrmC6D8qg_B9YaooV5MLeDvZi/pub?gid=956982417&single=true&output=csv" }
     ];
 
-    // 사진 기준 실제 컬럼 인덱스 (0부터 시작)
     const visibleColumns = {
-      "컴퓨터": [1,5,6,16,17],      // 이름, 컴퓨터번호, 시작시간, 현황, 참고
-      "노래연습실": [1,5,6,14,15],  // 이름, 노래방, 시작시간, 현황, 참고
-      "미디어실": [1,7,8,9],      // 이름, 시작시간, 현황, 참고
-      "체육활동실": [1,7,6,12,13],    // 이름, 시작시간, 현황, 참고
-      "북카페": [1,6,12,13],      // 이름, 남, 이용시작시간, 현황, 참고
-      "청운위실": [1,2,15,16],    // 이름, 남, 이용시작시간, 현황, 참고
-      "개인연습실": [1,2,12,13]   // 이름, 남, 이용시작시간, 현황, 참고
+      "컴퓨터": [1,5,6,16,17],
+      "노래연습실": [1,5,6,14,15],
+      "미디어실": [1,7,8,9],
+      "체육활동실": [1,7,6,12,13],
+      "북카페": [1,6,12,13],
+      "청운위실": [1,2,15,16],
+      "개인연습실": [1,2,12,13]
     };
 
     let currentIndex = 0;
@@ -131,22 +129,29 @@
     async function fetchCSV(url) {
       try {
         const res = await fetch(url);
-        if(!res.ok) throw new Error(`HTTP 오류: ${res.status}`);
+        if (!res.ok) throw new Error(`HTTP 오류: ${res.status}`);
         const text = await res.text();
-        return text.trim().split("\n").map(line => line.split(","));
-      } catch(e) {
-        document.getElementById("categoryDisplay").innerHTML = "데이터 불러오기 실패: " + e.message;
+        return text.trim().split("\n").map((line) => line.split(","));
+      } catch (e) {
+        document.getElementById("categoryDisplay").innerHTML =
+          "데이터 불러오기 실패: " + e.message;
         return [];
       }
     }
 
-    async function showCategory(index){
+    // 예약된 줄인지 체크하는 함수
+    // 모든 컬럼이 빈 문자열 또는 공백이면 예약없다고 판단 (필요 시 조건 수정)
+    function isReserved(row) {
+      return row.some((cell) => cell.trim() !== "");
+    }
+
+    async function showCategory(index) {
       const category = sources[index];
       const container = document.getElementById("categoryDisplay");
       container.classList.remove("show");
 
       const rows = await fetchCSV(category.url);
-      if(!rows.length){
+      if (!rows.length) {
         container.innerHTML = `<h2>${category.name}</h2><p>데이터 없음</p>`;
         container.classList.add("show");
         return;
@@ -154,16 +159,16 @@
 
       let html = `<h2>${category.name}</h2>`;
 
-      if(category.name === "컴퓨터"){
+      if (category.name === "컴퓨터") {
         html += `<div class="notice-box">기본이용시간: 1시간 <span>|</span> 최대이용시간: 2시간</div>`;
       }
-      if(category.name === "노래연습실"){
+      if (category.name === "노래연습실") {
         html += `<div class="notice-box">기본이용시간: 30분</div>`;
       }
-      if(category.name === "체육활동실"){
+      if (category.name === "체육활동실") {
         html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br>탁구 : 제한없음</div>`;
       }
-      if(category.name === "미디어실"){
+      if (category.name === "미디어실") {
         html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간<br>영화 : 영화 한 편</div>`;
       }
 
@@ -172,31 +177,33 @@
       html += `<hr>`;
       html += `<table>`;
 
-      // 헤더만 보여줄 컬럼 필터링
+      // 헤더 출력
       html += "<tr>";
       rows[0].forEach((colName, idx) => {
-        if(colsToShow.includes(idx)) {
+        if (colsToShow.includes(idx)) {
           html += `<th>${colName}</th>`;
         }
       });
       html += "</tr>";
 
-      // 데이터 행을 보여주는 열만 필터링해서 출력
-      rows.slice(1).forEach(row => {
-        html += "<tr>";
-        row.forEach((cell, idx) => {
-          if(colsToShow.includes(idx)) {
-            if(category.name !== "컴퓨터" && idx === 1){
-              html += `<td class="name-cell">${cell}</td>`;
-            } else {
-              html += `<td>${cell}</td>`;
+      // 데이터 출력 (예약된 줄만)
+      rows.slice(1).forEach((row) => {
+        if (isReserved(row)) {
+          html += "<tr>";
+          row.forEach((cell, idx) => {
+            if (colsToShow.includes(idx)) {
+              if (category.name !== "컴퓨터" && idx === 1) {
+                html += `<td class="name-cell">${cell}</td>`;
+              } else {
+                html += `<td>${cell}</td>`;
+              }
             }
-          }
-        });
-        html += "</tr>";
+          });
+          html += "</tr>";
+        }
       });
 
-      html += `</table>`;
+      html += "</table>";
 
       container.innerHTML = html;
       requestAnimationFrame(() => container.classList.add("show"));
