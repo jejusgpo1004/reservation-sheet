@@ -134,53 +134,72 @@
       }
     }
 
-    async function showCategory(index) {
-      const category = sources[index];
-      const container = document.getElementById("categoryDisplay");
-      container.classList.remove("show");
+function cleanName(name) {
+  // 특수문자 제거 (영문, 숫자, 한글만 남김)
+  let cleaned = name.replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z0-9\s]/g, '');
+  // 공백 제거
+  cleaned = cleaned.trim();
+  // 한글 기준으로 성과 이름 두 글자까지 자르기 (3자 기준)
+  // 단, 영문 숫자는 그대로 두고, 한글만 적용하려면 아래처럼 할수 있음
+  if (cleaned.length > 3) {
+    cleaned = cleaned.slice(0, 3);
+  }
+  return cleaned;
+}
 
-      const rows = await fetchCSV(category.url);
-      if (!rows.length) {
-        container.innerHTML = `<h2>${category.name}</h2><p>데이터 없음</p>`;
-        container.classList.add("show");
-        return;
+async function showCategory(index) {
+  const category = sources[index];
+  const container = document.getElementById("categoryDisplay");
+  container.classList.remove("show");
+
+  const rows = await fetchCSV(category.url);
+  if (!rows.length) {
+    container.innerHTML = `<h2>${category.name}</h2><p>데이터 없음</p>`;
+    container.classList.add("show");
+    return;
+  }
+
+  let html = `<h2>${category.name}</h2>`;
+
+  if (category.name === "컴퓨터") {
+    html += `<div class="notice-box">기본이용시간: 1시간 <span>|</span> 최대이용시간: 2시간</div>`;
+  }
+  if (category.name === "노래연습실") {
+    html += `<div class="notice-box">기본이용시간: 30분</div>`;
+  }
+  if (category.name === "체육활동실") {
+    html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br>탁구 : 제한없음</div>`;
+  }
+  if (category.name === "미디어실") {
+    html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간<br>영화 : 영화 한 편</div>`;
+  }
+
+  html += `<hr>`;
+  html += "<table>";
+  rows.forEach((row, i) => {
+    html += "<tr>";
+    row.forEach((cell, j) => {
+      if (i === 0) {
+        // 헤더는 그대로
+        html += `<th>${cell}</th>`;
+      } else {
+        // 컴퓨터 항목이 아니면서, 이름 컬럼이면 특수문자 제거 후 3글자만 표시
+        const nameColIndex = 0; // 예시로 첫번째 컬럼이 이름일 경우 index 0, 실제 인덱스 맞게 수정 필요
+        if (category.name !== "컴퓨터" && j === nameColIndex) {
+          const clean = cleanName(cell);
+          html += `<td>${clean}</td>`;
+        } else {
+          html += `<td>${cell}</td>`;
+        }
       }
+    });
+    html += "</tr>";
+  });
+  html += "</table>";
 
-      // 제목
-      let html = `<h2>${category.name}</h2>`;
-
-      // 안내박스 (필요 시 유형 별로 추가)
-      if (category.name === "컴퓨터") {
-        html += `<div class="notice-box">기본이용시간: 1시간 <span>|</span> 최대이용시간: 2시간</div>`;
-      }
-      if (category.name === "노래연습실") {
-        html += `<div class="notice-box">기본이용시간: 30분</div>`;
-      }
-      if (category.name === "체육활동실") {
-        html += `<div class="notice-box">AR플레이어 : 기본이용시간 30분 <span>|</span> 최대이용시간 1시간 <br>탁구 : 제한없음</div>`;
-      }
-      if (category.name === "미디어실") {
-        html += `<div class="notice-box">닌텐도 : 기본이용시간 30분, 최대이용시간 1시간<br>영화 : 영화 한 편</div>`;
-      }
-
-      // 중간선
-      html += `<hr>`;
-
-      // ★ 전체 컬럼 표 출력
-      html += "<table>";
-      rows.forEach((row, i) => {
-        html += "<tr>";
-        row.forEach(cell => {
-          html += i===0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
-        });
-        html += "</tr>";
-      });
-      html += "</table>";
-
-      container.innerHTML = html;
-      requestAnimationFrame(() => container.classList.add("show"));
-    }
-
+  container.innerHTML = html;
+  requestAnimationFrame(() => container.classList.add("show"));
+}
     showCategory(currentIndex);
     setInterval(() => {
       currentIndex = (currentIndex + 1) % sources.length;
